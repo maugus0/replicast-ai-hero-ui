@@ -246,7 +246,7 @@ export function ContactCTA() {
 
                     {/* Left arrow */}
                     <button
-                      className="absolute left-3 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md transition-all hover:scale-110 hover:bg-white sm:left-6 sm:h-8 sm:w-8"
+                      className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md transition-all hover:scale-110 hover:bg-white sm:left-6"
                       aria-label="Rotate left"
                       onMouseDown={() =>
                         window.dispatchEvent(
@@ -255,7 +255,7 @@ export function ContactCTA() {
                       }
                     >
                       <svg
-                        className="h-3.5 w-3.5 text-slate-600 sm:h-4 sm:w-4"
+                        className="h-4 w-4 text-slate-600 sm:h-5 sm:w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -271,7 +271,7 @@ export function ContactCTA() {
 
                     {/* Right arrow */}
                     <button
-                      className="absolute right-3 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md transition-all hover:scale-110 hover:bg-white sm:right-6 sm:h-8 sm:w-8"
+                      className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md transition-all hover:scale-110 hover:bg-white sm:right-6"
                       aria-label="Rotate right"
                       onMouseDown={() =>
                         window.dispatchEvent(
@@ -280,7 +280,7 @@ export function ContactCTA() {
                       }
                     >
                       <svg
-                        className="h-3.5 w-3.5 text-slate-600 sm:h-4 sm:w-4"
+                        className="h-4 w-4 text-slate-600 sm:h-5 sm:w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -308,7 +308,7 @@ export function ContactCTA() {
               </div>
 
               {/* Floating label */}
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-100 bg-white px-3 py-1 text-[10px] font-medium text-slate-600 shadow-lg sm:-bottom-2 sm:px-4 sm:py-1.5 sm:text-xs">
+              <div className="absolute -bottom-1 left-1/2 max-w-[200px] -translate-x-1/2 rounded-full border border-slate-100 bg-white px-3 py-1 text-center text-[10px] font-medium text-slate-600 shadow-lg sm:-bottom-2 sm:max-w-none sm:px-4 sm:py-1.5 sm:text-xs">
                 <span className="mr-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500 sm:mr-2 sm:h-2 sm:w-2" />
                 Arrows or drag to rotate
               </div>

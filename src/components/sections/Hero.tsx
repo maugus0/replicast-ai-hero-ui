@@ -37,7 +37,7 @@ export function Hero() {
               industries.
             </p>
 
-            <div className="mt-8 hidden flex-row justify-center gap-4 sm:flex lg:justify-start">
+            <div className="mt-8 flex flex-row justify-center gap-4 lg:justify-start">
               <button
                 onClick={scrollToContact}
                 className="rounded-lg bg-slate-900 px-8 py-3.5 text-base font-medium text-white transition-colors hover:bg-slate-800"
