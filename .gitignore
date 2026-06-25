@@ -68,6 +68,13 @@ index_out.html
 /playwright-report/
 /playwright/.cache/
 
+# Large binary files (should not be in git)
+*.fbx
+*.max
+*.rar
+*.uasset
+public/models/**/*.pdf
+
 # Misc
 *.pem
 .vercel
