@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button, Input, Select, useToast } from '@/components/ui'
 import { submitDemoForm, type DemoFormData } from '@/lib/formspree'
-import { siteConfig } from '@/content/siteConfig'
 import { cn } from '@/lib/utils'
 
 const industryOptions = [
@@ -165,11 +164,11 @@ export function FormspreeForm({ onSuccess, className }: FormspreeFormProps) {
 
       <p className="text-center text-sm text-gray-500">
         By submitting, you agree to our{' '}
-        <a href={`${siteConfig.basePath}/privacy`} className="text-holo-cyan hover:underline">
+        <a href="#" className="text-holo-cyan hover:underline">
           Privacy Policy
         </a>{' '}
         and{' '}
-        <a href={`${siteConfig.basePath}/terms`} className="text-holo-cyan hover:underline">
+        <a href="#" className="text-holo-cyan hover:underline">
           Terms of Service
         </a>
       </p>

@@ -11,7 +11,7 @@ export function Footer() {
     <footer className="border-t border-slate-100 bg-white" role="contentinfo">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <Link href={`${basePath}/`}>
+          <Link href="/">
             <Image
               src={`${basePath}/images/brand/replicast-ai.gif`}
               alt="Replicast AI"
