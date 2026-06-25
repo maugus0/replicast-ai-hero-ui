@@ -16,12 +16,11 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
   const group = useRef<THREE.Group>(null)
   const { scene, animations } = useGLTF(MODEL_PATH)
   const { actions } = useAnimations(animations, scene)
-  const mixerRef = useRef<THREE.AnimationMixer>()
-  const headRef = useRef<THREE.Bone>()
-  const neckRef = useRef<THREE.Bone>()
-  const spineRef = useRef<THREE.Bone>()
+  const mixerRef = useRef<THREE.AnimationMixer | undefined>(undefined)
+  const headRef = useRef<THREE.Bone | undefined>(undefined)
+  const neckRef = useRef<THREE.Bone | undefined>(undefined)
+  const spineRef = useRef<THREE.Bone | undefined>(undefined)
   const mousePosRef = useRef({ x: 0, y: 0 })
-  const clockRef = useRef(new THREE.Clock())
   const targetRotationRef = useRef(0)
 
   // Find bones and setup animations
@@ -82,8 +81,8 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     eyeTracking: { enabled: true, maxAngle: 0.25, smoothing: 0.08 },
   }
 
-  useFrame((_, delta) => {
-    const time = clockRef.current.getElapsedTime()
+  useFrame((state, delta) => {
+    const time = state.clock.getElapsedTime()
     if (mixerRef.current) mixerRef.current.update(delta)
 
     // Manual rotation from arrows
