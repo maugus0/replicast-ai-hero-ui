@@ -4,10 +4,12 @@ import { useEffect, useRef, useMemo, useState } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import * as THREE from 'three'
+import { siteConfig } from '@/content/siteConfig'
 
 // Marina model and textures
-const MODEL_PATH = '/models/Marina/uploads_files_2460380_Marina_1276.obj'
-const TEXTURE_PATH = '/models/Marina/Marina_1276_Textures/'
+const basePath = siteConfig.basePath || ''
+const MODEL_PATH = `${basePath}/models/Marina/uploads_files_2460380_Marina_1276.obj`
+const TEXTURE_PATH = `${basePath}/models/Marina/Marina_1276_Textures/`
 
 export function HolographicAvatar() {
   const loadedObj = useLoader(OBJLoader, MODEL_PATH)

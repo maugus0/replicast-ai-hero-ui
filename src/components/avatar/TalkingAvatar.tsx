@@ -4,8 +4,10 @@ import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import * as THREE from 'three'
+import { siteConfig } from '@/content/siteConfig'
 
-const MODEL_PATH = '/models/avatar/scene.gltf'
+const basePath = siteConfig.basePath || ''
+const MODEL_PATH = `${basePath}/models/avatar/scene.gltf`
 
 interface TalkingAvatarProps {
   isSpeaking?: boolean
