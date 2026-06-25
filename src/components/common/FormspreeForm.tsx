@@ -6,9 +6,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button, Input, Select, useToast } from '@/components/ui'
 import { submitDemoForm, type DemoFormData } from '@/lib/formspree'
-import { industries } from '@/content/industries'
 import { siteConfig } from '@/content/siteConfig'
 import { cn } from '@/lib/utils'
+
+const industryOptions = [
+  { value: 'retail', label: 'Retail' },
+  { value: 'hospitality', label: 'Hospitality' },
+  { value: 'healthcare', label: 'Healthcare' },
+  { value: 'financial', label: 'Financial Services' },
+  { value: 'airports', label: 'Airports & Transit' },
+  { value: 'public-services', label: 'Public Services' },
+  { value: 'other', label: 'Other' },
+]
 
 const demoFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -93,7 +102,7 @@ export function FormspreeForm({ onSuccess, className }: FormspreeFormProps) {
         label="Industry"
         placeholder="Select your industry"
         error={errors.industry?.message}
-        options={industries.map((i) => ({ value: i.slug, label: i.title }))}
+        options={industryOptions}
         {...register('industry')}
       />
 

@@ -16,13 +16,14 @@ Unlike traditional web apps that need a server running 24/7, this site is **pre-
 
 ### What the site includes:
 
-| Page | URL | Description |
-|------|-----|-------------|
-| **Home** | `/` | Hero with 3D avatar, TTS demo, features, use cases |
-| **Industries** | `/industries/[slug]` | 6 industry-specific pages (retail, hospitality, etc.) |
-| **Technology** | `/technology` | Architecture diagrams and technical specs |
-| **Company** | `/company` | Mission, values, and team information |
-| **Demo** | `/demo` | Demo request form (Formspree) |
+This is a **single-page landing site** with the following sections:
+
+| Section | Description |
+|---------|-------------|
+| **Hero** | Eye-catching header with kiosk image and CTAs |
+| **About** | Interactive 3D avatar in a virtual kiosk frame |
+| **Features** | Key capabilities of the AI digital humans |
+| **Contact** | Demo request form with TTS-enabled avatar |
 
 ---
 
@@ -147,36 +148,30 @@ Here's what each folder does:
 replicast-ai-hero-ui/
 │
 ├── 📁 public/                     # Static files served as-is
-│   ├── models/avatar/             # 3D model files (GLTF format)
+│   ├── models/avatar/             # 3D model (GLTF) for TTS demo
+│   ├── models/Marina/             # 3D model (OBJ) for About section
 │   ├── images/                    # Logos, OG images
 │   └── favicon.ico                # Browser tab icon
 │
 ├── 📁 src/                        # All source code lives here
 │   │
-│   ├── 📁 app/                    # PAGES - each folder = a URL route
-│   │   ├── layout.tsx             # Wraps ALL pages (header, footer)
+│   ├── 📁 app/                    # Single-page app
+│   │   ├── layout.tsx             # Root layout (header, footer)
 │   │   ├── page.tsx               # Homepage (/)
 │   │   ├── globals.css            # Global styles
-│   │   ├── demo/page.tsx          # /demo
-│   │   ├── company/page.tsx       # /company
-│   │   ├── technology/page.tsx    # /technology
-│   │   └── industries/[slug]/     # /industries/retail, /industries/healthcare, etc.
-│   │       └── page.tsx           # [slug] = dynamic segment
+│   │   └── not-found.tsx          # 404 page
 │   │
 │   ├── 📁 components/             # REUSABLE UI PIECES
-│   │   ├── avatar/                # 3D avatar stuff
-│   │   ├── common/                # Shared components (ErrorBoundary, TTSDemo)
-│   │   ├── industries/            # Industry-specific components
+│   │   ├── avatar/                # 3D avatar components
+│   │   ├── common/                # Shared components (ErrorBoundary, Forms)
 │   │   ├── layout/                # Header, Footer, Providers
-│   │   ├── sections/              # Homepage sections (Hero, Features, etc.)
-│   │   ├── technology/            # Tech page components
+│   │   ├── sections/              # Homepage sections (Hero, About, etc.)
 │   │   └── ui/                    # Basic UI elements (Button, Card, Input)
 │   │
 │   ├── 📁 content/                # DATA - no React code, just data
 │   │   ├── siteConfig.ts          # Site name, URLs, nav links
-│   │   ├── industries.ts          # Industry data (name, description, metrics)
+│   │   ├── avatar.ts              # Avatar configuration
 │   │   ├── features.ts            # Feature cards data
-│   │   ├── company.ts             # Company info
 │   │   └── testimonials.ts        # Customer quotes
 │   │
 │   ├── 📁 types/                  # TypeScript type definitions
@@ -217,10 +212,9 @@ replicast-ai-hero-ui/
 
 ### Key concepts:
 
-- **`app/` folder** = Routes. `app/demo/page.tsx` becomes the `/demo` URL.
+- **`app/` folder** = Single page at `/` with all sections
 - **`components/` folder** = Reusable pieces. Import them wherever needed.
 - **`content/` folder** = Data only. Edit these to change site text without touching React code.
-- **`[slug]`** = Dynamic route. `/industries/retail` and `/industries/healthcare` use the same `page.tsx`.
 
 ---
 
@@ -495,10 +489,9 @@ Test files are in `src/__tests__/` and use:
 
 Edit files in `src/content/`:
 
-- **Company info** → `company.ts`
 - **Features** → `features.ts`
-- **Industries** → `industries.ts`
-- **Nav links** → `navigation.ts`
+- **Avatar config** → `avatar.ts`
+- **Site settings** → `siteConfig.ts`
 
 ### Add a new component
 
@@ -556,8 +549,8 @@ If you're learning the codebase, start here:
 
 1. `src/app/page.tsx` - Homepage, shows how sections compose
 2. `src/components/ui/Button.tsx` - Simple component example
-3. `src/content/industries.ts` - How data is structured
-4. `src/components/common/TTSDemo.tsx` - Interactive component with state
+3. `src/content/features.ts` - How data is structured
+4. `src/components/sections/ContactCTA.tsx` - Interactive component with TTS
 5. `.github/workflows/deploy.yml` - CI/CD pipeline (heavily commented!)
 
 ---
