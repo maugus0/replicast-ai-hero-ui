@@ -21,6 +21,21 @@ export const siteConfig = {
     linkedin: 'https://linkedin.com/company/replicastai',
     github: 'https://github.com/maugus0/replicast-ai-hero-ui',
   },
+  contact: {
+    email: 'hello@replicast.ai',
+    phone: '+1 (555) 000-0000',
+  },
+  location: {
+    address: '123 Innovation Drive, Suite 400',
+    city: 'San Francisco',
+    state: 'CA',
+    zip: '94105',
+    country: 'United States',
+  },
+  links: {
+    privacy: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/privacy`,
+    terms: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/terms`,
+  },
 }
 
 export type SiteConfig = typeof siteConfig

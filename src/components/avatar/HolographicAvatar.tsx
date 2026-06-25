@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useMemo, useState } from 'react'
-import { useFrame, useLoader } from '@react-three/fiber'
+import { useFrame, useLoader, useThree } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import * as THREE from 'three'
 
@@ -11,11 +11,14 @@ const TEXTURE_PATH = '/models/Marina/Marina_1276_Textures/'
 
 export function HolographicAvatar() {
   const loadedObj = useLoader(OBJLoader, MODEL_PATH)
+  const { gl } = useThree()
+  const canvasEl = gl.domElement
   const groupRef = useRef<THREE.Group>(null)
   const [isDragging, setIsDragging] = useState(false)
   const dragStartRef = useRef({ x: 0, rotationY: 0 })
   const targetRotationRef = useRef(0)
   const velocityRef = useRef(0)
+  const isDraggingRef = useRef(false)
 
   // Clone the object to avoid shared state issues
   const obj = useMemo(() => loadedObj.clone(), [loadedObj])
@@ -69,10 +72,14 @@ export function HolographicAvatar() {
     })
   }, [obj])
 
-  // Mouse/touch drag for full 360° rotation
+  // Mouse/touch drag for full 360° rotation — only inside the Canvas
   useEffect(() => {
+    const isInsideCanvas = (target: EventTarget | null) =>
+      target instanceof Node && canvasEl.contains(target)
+
     const handleStart = (clientX: number) => {
       setIsDragging(true)
+      isDraggingRef.current = true
       dragStartRef.current = {
         x: clientX,
         rotationY: targetRotationRef.current,
@@ -81,7 +88,7 @@ export function HolographicAvatar() {
     }
 
     const handleMove = (clientX: number) => {
-      if (!isDragging) return
+      if (!isDraggingRef.current) return
       const deltaX = clientX - dragStartRef.current.x
       targetRotationRef.current = dragStartRef.current.rotationY + deltaX * 0.01
       velocityRef.current = deltaX * 0.0002
@@ -89,6 +96,7 @@ export function HolographicAvatar() {
 
     const handleEnd = () => {
       setIsDragging(false)
+      isDraggingRef.current = false
     }
 
     // Button rotation handler
@@ -98,13 +106,19 @@ export function HolographicAvatar() {
       targetRotationRef.current += rotationAmount
     }
 
-    // Mouse events
-    const onMouseDown = (e: MouseEvent) => handleStart(e.clientX)
+    // Mouse events — only respond when drag starts inside Canvas
+    const onMouseDown = (e: MouseEvent) => {
+      if (!isInsideCanvas(e.target)) return
+      handleStart(e.clientX)
+    }
     const onMouseMove = (e: MouseEvent) => handleMove(e.clientX)
     const onMouseUp = () => handleEnd()
 
     // Touch events
-    const onTouchStart = (e: TouchEvent) => handleStart(e.touches[0].clientX)
+    const onTouchStart = (e: TouchEvent) => {
+      if (!isInsideCanvas(e.target)) return
+      handleStart(e.touches[0].clientX)
+    }
     const onTouchMove = (e: TouchEvent) => handleMove(e.touches[0].clientX)
     const onTouchEnd = () => handleEnd()
 
@@ -125,7 +139,7 @@ export function HolographicAvatar() {
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('rotateModel', handleButtonRotate)
     }
-  }, [isDragging])
+  }, [canvasEl])
 
   useFrame(() => {
     if (groupRef.current) {

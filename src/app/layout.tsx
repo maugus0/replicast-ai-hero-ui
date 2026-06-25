@@ -102,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const appVersion = process.env.NEXT_PUBLIC_APP_VERSION || 'dev'
 
   return (
-    <html lang="en" className="scroll-smooth light" data-scroll-behavior="smooth">
+    <html lang="en" className="scroll-smooth light" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <meta name="app-version" content={appVersion} />
         <meta name="msapplication-TileColor" content="#3B82F6" />
