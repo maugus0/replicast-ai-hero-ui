@@ -1,0 +1,10 @@
+node_modules
+out
+dist
+.next
+build
+coverage
+*.sarif
+piper-models
+*.md
+package-lock.json
