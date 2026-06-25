@@ -52,7 +52,7 @@ export const metadata: Metadata = {
       'AI-powered digital humans that talk, react, and serve — on kiosks, in holograms, across industries.',
     images: [
       {
-        url: `${basePath}/images/kiosk-hero.png`,
+        url: '/images/kiosk-hero.png',
         width: 600,
         height: 800,
         alt: 'Replicast AI - Holographic AI Digital Humans on Kiosks',
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     creator: '@replicastai',
     title: 'Replicast AI | Holographic AI Digital Humans',
     description: 'AI-powered digital humans that talk, react, and serve.',
-    images: [`${basePath}/images/kiosk-hero.png`],
+    images: ['/images/kiosk-hero.png'],
   },
   icons: {
     icon: [
@@ -122,7 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@type': 'Organization',
               name: 'Replicast AI',
               url: siteUrl,
-              logo: `${siteUrl}${basePath}/images/brand/webclip-source.png`,
+              logo: `${siteUrl}/images/brand/webclip-source.png`,
               description:
                 'AI-powered digital humans that talk, react, and serve — on kiosks, in holograms, across industries.',
               sameAs: [

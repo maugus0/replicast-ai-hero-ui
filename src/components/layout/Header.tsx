@@ -35,11 +35,7 @@ export function Header() {
           aria-label="Main navigation"
         >
           <div className="flex h-20 items-center justify-between">
-            <Link
-              href={`${basePath}/`}
-              className="flex items-center"
-              aria-label={`${siteConfig.name} - Home`}
-            >
+            <Link href="/" className="flex items-center" aria-label={`${siteConfig.name} - Home`}>
               <Image
                 src={`${basePath}/images/brand/replicast-ai.gif`}
                 alt="Replicast AI"
@@ -111,11 +107,7 @@ export function Header() {
         aria-label="Main navigation"
       >
         <div className="flex h-20 items-center justify-between lg:h-24">
-          <Link
-            href={`${basePath}/`}
-            className="flex items-center"
-            aria-label={`${siteConfig.name} - Home`}
-          >
+          <Link href="/" className="flex items-center" aria-label={`${siteConfig.name} - Home`}>
             <Image
               src={`${basePath}/images/brand/replicast-ai.gif`}
               alt="Replicast AI"
