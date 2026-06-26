@@ -42,7 +42,7 @@ function AvatarCanvas() {
 
 export function AboutKiosk() {
   return (
-    <section className="bg-slate-50 py-10 sm:py-14 lg:py-16">
+    <section id="about" className="scroll-mt-24 bg-slate-50 py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left: 3D Avatar in Kiosk Frame */}

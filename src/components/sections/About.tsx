@@ -20,7 +20,7 @@ export function About() {
   }, [])
 
   return (
-    <section id="about" className="relative h-dvh w-full overflow-hidden">
+    <section className="relative aspect-video w-full overflow-hidden md:aspect-auto md:h-dvh">
       <video
         ref={videoRef}
         autoPlay
@@ -30,11 +30,11 @@ export function About() {
         preload="auto"
         disablePictureInPicture
         disableRemotePlayback
-        className="h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover object-center brightness-105 contrast-[1.02] saturate-[1.15]"
       >
         <source src={`${basePath}/videos/about-background.mp4`} type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-slate-900/5" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/40 to-transparent" />
     </section>
   )
 }

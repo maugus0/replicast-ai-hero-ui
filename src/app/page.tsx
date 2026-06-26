@@ -4,9 +4,9 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <About />
       <AboutKiosk />
       <Features />
+      <About />
       <ContactCTA />
     </>
   )
