@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import * as THREE from 'three'
 import { siteConfig } from '@/content/siteConfig'
+import { avatarConfig } from '@/content/avatar'
 
 const basePath = siteConfig.basePath || ''
 const MODEL_PATH = `${basePath}/models/avatar/scene.gltf`
@@ -17,46 +18,61 @@ interface TalkingAvatarProps {
 export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProps) {
   const group = useRef<THREE.Group>(null)
   const { scene, animations } = useGLTF(MODEL_PATH)
-  const { actions } = useAnimations(animations, scene)
-  const mixerRef = useRef<THREE.AnimationMixer | undefined>(undefined)
+  const { mixer } = useAnimations(animations, scene)
   const headRef = useRef<THREE.Bone | undefined>(undefined)
   const neckRef = useRef<THREE.Bone | undefined>(undefined)
   const spineRef = useRef<THREE.Bone | undefined>(undefined)
   const mousePosRef = useRef({ x: 0, y: 0 })
   const targetRotationRef = useRef(0)
 
-  // Find bones and setup animations
+  const eyeTracking = avatarConfig.idleAnimations.eyeTracking
+
   useEffect(() => {
+    // Find bones from skeleton
+    // Find bones from skeleton (primary)
     scene.traverse((child) => {
-      if (child instanceof THREE.Bone) {
-        const name = child.name.toLowerCase()
-        if (name.includes('head') && !name.includes('top')) headRef.current = child
-        if (name.includes('neck')) neckRef.current = child
-        if (name.includes('spine2') || name.includes('spine_2')) spineRef.current = child
+      if ((child as any).isSkinnedMesh) {
+        const bones = (child as THREE.SkinnedMesh).skeleton.bones
+        for (const bone of bones) {
+          const name = bone.name.toLowerCase()
+          if (name.includes('head') && !name.includes('top')) headRef.current = bone
+          if (name.includes('neck')) neckRef.current = bone
+          if (name.includes('spine2') || name.includes('spine_2')) spineRef.current = bone
+        }
       }
     })
+    // Fallback: search scene hierarchy for bones directly
+    if (!headRef.current) {
+      scene.traverse((child) => {
+        if ((child as any).isBone) {
+          const name = child.name.toLowerCase()
+          if (name.includes('head') && !name.includes('top')) headRef.current = child as THREE.Bone
+          if (name.includes('neck')) neckRef.current = child as THREE.Bone
+          if (name.includes('spine2') || name.includes('spine_2')) spineRef.current = child as THREE.Bone
+        }
+      })
+    }
 
-    const mixer = new THREE.AnimationMixer(scene)
-    mixerRef.current = mixer
-
-    // Play idle animation
-    if (actions.idle) {
-      actions.idle.play()
-    } else if (Object.keys(actions).length > 0) {
-      Object.values(actions)[0]?.play()
+    // Play idle animation with neck tracks removed to prevent conflict with head tracking
+    const idleClip = THREE.AnimationClip.findByName(animations, 'idle') || animations[0]
+    if (idleClip && mixer) {
+      const cleanClip = idleClip.clone()
+      cleanClip.tracks = cleanClip.tracks.filter(
+        (track) => !track.name.toLowerCase().includes('neck')
+      )
+      const idleAction = mixer.clipAction(cleanClip)
+      idleAction.play()
     }
 
     onReady?.()
 
     return () => {
-      if (mixerRef.current) {
-        mixerRef.current.stopAllAction()
-        mixerRef.current.uncacheRoot(scene)
+      if (mixer) {
+        mixer.stopAllAction()
       }
     }
-  }, [scene, actions, onReady])
+  }, [scene, mixer, onReady])
 
-  // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePosRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
@@ -66,7 +82,6 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Button rotation handler
   useEffect(() => {
     const handleButtonRotate = (e: Event) => {
       const customEvent = e as CustomEvent<{ direction: string }>
@@ -77,17 +92,9 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     return () => window.removeEventListener('rotateTalkingModel', handleButtonRotate)
   }, [])
 
-  // Animation config
-  const config = {
-    breathing: { enabled: true, speed: 1.2, intensity: 0.008 },
-    eyeTracking: { enabled: true, maxAngle: 0.25, smoothing: 0.08 },
-  }
-
   useFrame((state, delta) => {
-    const time = state.clock.getElapsedTime()
-    if (mixerRef.current) mixerRef.current.update(delta)
+    if (mixer) mixer.update(delta)
 
-    // Manual rotation from arrows
     if (group.current) {
       group.current.rotation.y = THREE.MathUtils.lerp(
         group.current.rotation.y,
@@ -96,49 +103,39 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
       )
     }
 
-    // Breathing animation
-    if (config.breathing.enabled) {
-      const breath = Math.sin(time * config.breathing.speed) * config.breathing.intensity
-      scene.scale.setScalar(1 + breath * 0.5)
-      if (spineRef.current) {
-        spineRef.current.rotation.x = breath * 0.05
-      }
-    }
-
-    // Speaking animation
-    if (isSpeaking && spineRef.current) {
-      const speakMove = Math.sin(time * 6) * 0.02
-      spineRef.current.rotation.x += speakMove
-    }
-
-    // Eye/head tracking
-    if (config.eyeTracking.enabled) {
-      const mx = mousePosRef.current.x * config.eyeTracking.maxAngle
-      const my = mousePosRef.current.y * config.eyeTracking.maxAngle * 0.5
-
+    if (eyeTracking.enabled) {
       if (headRef.current) {
         headRef.current.rotation.y = THREE.MathUtils.lerp(
           headRef.current.rotation.y,
-          mx,
-          config.eyeTracking.smoothing
+          mousePosRef.current.x * eyeTracking.maxAngle,
+          eyeTracking.smoothing
         )
         headRef.current.rotation.x = THREE.MathUtils.lerp(
           headRef.current.rotation.x,
-          -my,
-          config.eyeTracking.smoothing
+          mousePosRef.current.y * eyeTracking.maxAngle * 0.5,
+          eyeTracking.smoothing
         )
       }
+
       if (neckRef.current) {
         neckRef.current.rotation.y = THREE.MathUtils.lerp(
           neckRef.current.rotation.y,
-          mx * 0.5,
-          config.eyeTracking.smoothing
+          mousePosRef.current.x * eyeTracking.maxAngle * 0.3,
+          eyeTracking.smoothing
         )
         neckRef.current.rotation.x = THREE.MathUtils.lerp(
           neckRef.current.rotation.x,
-          -my * 0.5,
-          config.eyeTracking.smoothing
+          mousePosRef.current.y * eyeTracking.maxAngle * 0.15,
+          eyeTracking.smoothing
         )
+      }
+    }
+
+    if (spineRef.current) {
+      const breath = Math.sin(state.clock.getElapsedTime() * avatarConfig.idleAnimations.breathing.speed) * avatarConfig.idleAnimations.breathing.intensity
+      spineRef.current.rotation.x = breath * 0.05
+      if (isSpeaking) {
+        spineRef.current.rotation.x += Math.sin(state.clock.getElapsedTime() * 6) * 0.02
       }
     }
   })

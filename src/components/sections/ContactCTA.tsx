@@ -251,10 +251,20 @@ export function ContactCTA() {
     phone: '',
     message: '',
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+
+  const validate = () => {
+    const next: Record<string, string> = {}
+    if (/\d/.test(formData.name)) next.name = 'Name cannot contain numbers'
+    if (/[a-zA-Z]/.test(formData.phone)) next.phone = 'Phone cannot contain letters'
+    setErrors(next)
+    return Object.keys(next).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!validate()) return
 
     if (!siteConfig.formspreeEndpoint) {
       setStatus('error')
@@ -273,6 +283,7 @@ export function ContactCTA() {
       if (response.ok) {
         setStatus('success')
         setFormData({ name: '', email: '', company: '', phone: '', message: '' })
+        setErrors({})
       } else {
         setStatus('error')
       }
@@ -282,7 +293,15 @@ export function ContactCTA() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (errors[name]) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[name]
+        return next
+      })
+    }
   }
 
   const inputClasses =
@@ -333,40 +352,54 @@ export function ContactCTA() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-3">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className={inputClasses}
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className={inputClasses}
-                />
-                <input
-                  type="text"
-                  name="company"
-                  placeholder="Company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  className={inputClasses}
-                />
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={inputClasses}
-                />
+                <div>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className={`${inputClasses} ${errors.name ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20' : ''}`}
+                  />
+                  {errors.name && (
+                    <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className={inputClasses}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    name="company"
+                    placeholder="Company"
+                    value={formData.company}
+                    onChange={handleChange}
+                    className={inputClasses}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`${inputClasses} ${errors.phone ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20' : ''}`}
+                  />
+                  {errors.phone && (
+                    <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
+                  )}
+                </div>
                 <textarea
                   name="message"
                   placeholder="Your Message"

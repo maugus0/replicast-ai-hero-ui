@@ -20,8 +20,8 @@ export const avatarConfig = {
     },
     eyeTracking: {
       enabled: true,
-      smoothing: 0.05,
-      maxAngle: 0.15,
+      smoothing: 0.15,
+      maxAngle: 0.8,
     },
   },
   defaultVoice: 'lessac',
