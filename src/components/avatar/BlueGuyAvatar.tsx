@@ -32,16 +32,8 @@ export function BlueGuyAvatar() {
     const targetY = -Math.PI / 6 + mousePosRef.current.x * 0.15
     const targetX = mousePosRef.current.y * 0.1
 
-    group.current.rotation.y = THREE.MathUtils.lerp(
-      group.current.rotation.y,
-      targetY,
-      0.05
-    )
-    group.current.rotation.x = THREE.MathUtils.lerp(
-      group.current.rotation.x,
-      targetX,
-      0.05
-    )
+    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetY, 0.05)
+    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetX, 0.05)
   })
 
   return (

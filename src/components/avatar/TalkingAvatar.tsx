@@ -31,7 +31,7 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     // Find bones from skeleton
     // Find bones from skeleton (primary)
     scene.traverse((child) => {
-      if ((child as any).isSkinnedMesh) {
+      if ((child as THREE.SkinnedMesh).isSkinnedMesh) {
         const bones = (child as THREE.SkinnedMesh).skeleton.bones
         for (const bone of bones) {
           const name = bone.name.toLowerCase()
@@ -44,11 +44,12 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     // Fallback: search scene hierarchy for bones directly
     if (!headRef.current) {
       scene.traverse((child) => {
-        if ((child as any).isBone) {
+        if ((child as THREE.Bone).isBone) {
           const name = child.name.toLowerCase()
           if (name.includes('head') && !name.includes('top')) headRef.current = child as THREE.Bone
           if (name.includes('neck')) neckRef.current = child as THREE.Bone
-          if (name.includes('spine2') || name.includes('spine_2')) spineRef.current = child as THREE.Bone
+          if (name.includes('spine2') || name.includes('spine_2'))
+            spineRef.current = child as THREE.Bone
         }
       })
     }
@@ -71,7 +72,7 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
         mixer.stopAllAction()
       }
     }
-  }, [scene, mixer, onReady])
+  }, [scene, mixer, animations, onReady])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -132,7 +133,9 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     }
 
     if (spineRef.current) {
-      const breath = Math.sin(state.clock.getElapsedTime() * avatarConfig.idleAnimations.breathing.speed) * avatarConfig.idleAnimations.breathing.intensity
+      const breath =
+        Math.sin(state.clock.getElapsedTime() * avatarConfig.idleAnimations.breathing.speed) *
+        avatarConfig.idleAnimations.breathing.intensity
       spineRef.current.rotation.x = breath * 0.05
       if (isSpeaking) {
         spineRef.current.rotation.x += Math.sin(state.clock.getElapsedTime() * 6) * 0.02

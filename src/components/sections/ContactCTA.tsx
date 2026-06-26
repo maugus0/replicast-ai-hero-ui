@@ -362,9 +362,7 @@ export function ContactCTA() {
                     required
                     className={`${inputClasses} ${errors.name ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20' : ''}`}
                   />
-                  {errors.name && (
-                    <p className="mt-1 text-xs text-red-500">{errors.name}</p>
-                  )}
+                  {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
                 </div>
                 <div>
                   <input
@@ -396,9 +394,7 @@ export function ContactCTA() {
                     onChange={handleChange}
                     className={`${inputClasses} ${errors.phone ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20' : ''}`}
                   />
-                  {errors.phone && (
-                    <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
-                  )}
+                  {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
                 </div>
                 <textarea
                   name="message"

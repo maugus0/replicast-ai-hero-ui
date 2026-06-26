@@ -160,8 +160,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
           <p className="text-xs text-slate-600">
-            Powered by{' '}
-            <span className="text-slate-500">{siteConfig.name}</span>
+            Powered by <span className="text-slate-500">{siteConfig.name}</span>
           </p>
         </div>
       </div>
