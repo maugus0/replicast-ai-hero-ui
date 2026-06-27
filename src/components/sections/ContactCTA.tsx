@@ -860,8 +860,9 @@ export function ContactCTA() {
                   value={formData.phone}
                   onChange={handleChange}
                   maxLength={FIELD_LIMITS.phone}
-                  className={inputCls}
+                  className={`${inputCls} ${errors.phone ? 'border-red-400' : ''}`}
                 />
+                {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
                 <textarea
                   name="message"
                   placeholder="Your Message"

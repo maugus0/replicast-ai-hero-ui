@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { siteConfig } from '@/content/siteConfig'
 
-export function BreezeCollab() {
+export function BrezzeCollab() {
   const basePath = siteConfig.basePath || ''
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -62,7 +62,7 @@ export function BreezeCollab() {
           disableRemotePlayback
           className="absolute inset-0 h-full w-full bg-black object-contain"
         >
-          <source src={`${basePath}/videos/breeze-collab.mp4`} type="video/mp4" />
+          <source src={`${basePath}/videos/brezze-collab.mp4`} type="video/mp4" />
         </video>
       </section>
     </div>

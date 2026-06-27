@@ -5,7 +5,7 @@ import {
   Features,
   ContactCTA,
   JayaGrocers,
-  BreezeCollab,
+  BrezzeCollab,
   PartnershipsGallery,
 } from '@/components/sections'
 
@@ -19,7 +19,7 @@ export default function HomePage() {
       <ContactCTA />
       <JayaGrocers />
       <PartnershipsGallery />
-      <BreezeCollab />
+      <BrezzeCollab />
     </>
   )
 }
