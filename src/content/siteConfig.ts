@@ -18,7 +18,7 @@ export const siteConfig = {
   formspreeEndpoint: formspreeId ? `https://formspree.io/f/${formspreeId}` : '',
   version: process.env.NEXT_PUBLIC_APP_VERSION || 'dev',
   contact: {
-    email: 'hello@replicast.ai',
+    email: 'hi@replicast.ai',
   },
   company: {
     uen: '202520403N',

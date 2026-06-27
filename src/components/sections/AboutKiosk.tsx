@@ -135,9 +135,9 @@ export function AboutKiosk() {
             </div>
 
             {/* Floating label */}
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-100 bg-white px-3 py-1 text-[10px] font-medium text-slate-600 shadow-lg sm:-bottom-2 sm:px-4 sm:py-1.5 sm:text-xs">
-              <span className="mr-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500 sm:mr-2 sm:h-2 sm:w-2" />
-              Arrows or drag to rotate
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-slate-200/80 bg-white/95 px-4 py-1.5 text-[11px] font-medium text-slate-600 shadow-md backdrop-blur-sm sm:text-xs">
+              <span className="mr-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
+              Interactive 3D Model
             </div>
           </motion.div>
 

@@ -22,22 +22,24 @@ export function Footer() {
   const { address, company, social } = siteConfig
 
   return (
-    <footer className="border-t border-slate-100 bg-white" role="contentinfo">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center gap-8 lg:flex-row lg:justify-center lg:gap-10">
-          {/* Logo + social */}
-          <div className="flex flex-col items-center gap-3 lg:items-start">
-            <Link href="/">
+    <footer id="footer" className="scroll-mt-24 border-t border-slate-200" role="contentinfo">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        {/* Main row - same height as nav */}
+        <div className="flex h-20 flex-col items-center justify-center gap-4 md:h-24 md:flex-row md:justify-between md:gap-0">
+          {/* Left: Logo + Social */}
+          <div className="flex items-center gap-4">
+            <Link href="/" className="transition-opacity hover:opacity-80">
               <Image
                 src={`${basePath}/images/brand/replicast-ai.gif`}
                 alt="Replicast AI"
-                width={200}
-                height={50}
-                className="h-16 w-auto sm:h-[4.5rem]"
+                width={400}
+                height={100}
+                className="h-16 w-auto lg:h-[72px]"
                 unoptimized
               />
             </Link>
-            <div className="flex gap-2">
+            <div className="hidden h-6 w-px bg-slate-200 sm:block" />
+            <div className="hidden items-center gap-2 sm:flex">
               {(Object.entries(social) as [keyof typeof socialIcons, string][]).map(
                 ([platform, url]) => (
                   <a
@@ -46,7 +48,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={platform}
-                    className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-500 transition-colors hover:border-[#6366f1] hover:text-[#6366f1]"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-[#6366f1]"
                   >
                     {socialIcons[platform]}
                   </a>
@@ -55,21 +57,70 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Company details */}
-          <div className="text-center text-sm leading-relaxed lg:text-left">
-            <p className="font-medium text-slate-900">{siteConfig.legalName}</p>
-            <p className="mt-1 text-slate-600">UEN {company.uen}</p>
-            <p className="mt-3 text-slate-600">
-              {address.street}, {address.suite}
-              <br />
-              {address.city} {address.postalCode}
-            </p>
+          {/* Right: Company details + Contact */}
+          <div className="hidden text-right text-xs leading-relaxed text-slate-600 md:block">
+            <div>
+              <a
+                href={`mailto:${siteConfig.contact.email}`}
+                className="font-medium text-[#6366f1] hover:underline"
+              >
+                {siteConfig.contact.email}
+              </a>
+            </div>
+            <div className="mt-1">
+              <span className="font-medium text-slate-900">{siteConfig.legalName}</span>
+              <span className="mx-2 text-slate-300">·</span>
+              <span>UEN {company.uen}</span>
+              <span className="mx-2 text-slate-300">·</span>
+              <span>
+                {address.street}, {address.suite}, {address.city} {address.postalCode}
+              </span>
+            </div>
           </div>
         </div>
 
-        <p className="mt-8 border-t border-slate-100 pt-6 text-center text-xs text-slate-500">
-          &copy; {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.
-        </p>
+        {/* Mobile: Company details + copyright */}
+        <div className="border-t border-slate-100 py-4 text-center md:hidden">
+          <div className="flex items-center justify-center gap-2 pb-3">
+            {(Object.entries(social) as [keyof typeof socialIcons, string][]).map(
+              ([platform, url]) => (
+                <a
+                  key={platform}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={platform}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-[#6366f1]"
+                >
+                  {socialIcons[platform]}
+                </a>
+              )
+            )}
+          </div>
+          <p className="pb-2">
+            <a
+              href={`mailto:${siteConfig.contact.email}`}
+              className="text-sm font-medium text-[#6366f1] hover:underline"
+            >
+              {siteConfig.contact.email}
+            </a>
+          </p>
+          <p className="text-xs text-slate-600">
+            <span className="font-medium text-slate-900">{siteConfig.legalName}</span>
+            <span className="mx-1.5 text-slate-300">·</span>
+            <span>UEN {company.uen}</span>
+          </p>
+          <p className="mt-1 text-xs text-slate-500">
+            {address.street}, {address.suite}, {address.city} {address.postalCode}
+          </p>
+        </div>
+
+        {/* Copyright row */}
+        <div className="border-t border-slate-100 py-3 text-center">
+          <p className="text-[11px] text-slate-400">
+            &copy; {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   )

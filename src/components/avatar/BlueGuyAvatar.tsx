@@ -15,21 +15,37 @@ export function BlueGuyAvatar() {
   const mousePosRef = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
+    const updatePointer = (clientX: number, clientY: number) => {
+      mousePosRef.current.x = (clientX / window.innerWidth) * 2 - 1
+      mousePosRef.current.y = -(clientY / window.innerHeight) * 2 + 1
+    }
     const handleMouseMove = (e: MouseEvent) => {
-      mousePosRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
-      mousePosRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1
+      updatePointer(e.clientX, e.clientY)
+    }
+    const handleTouch = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY)
+      }
     }
     window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('touchstart', handleTouch, { passive: true })
+    window.addEventListener('touchmove', handleTouch, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('touchstart', handleTouch)
+      window.removeEventListener('touchmove', handleTouch)
+    }
   }, [])
 
   useFrame((state) => {
     if (!group.current) return
     const time = state.clock.getElapsedTime()
 
+    // Floating hover animation
     group.current.position.y = Math.sin(time * 0.8) * 0.03
 
-    const targetY = -Math.PI / 6 + mousePosRef.current.x * 0.15
+    // Mouse/touch tracking - facing straight forward (no offset)
+    const targetY = mousePosRef.current.x * 0.15
     const targetX = mousePosRef.current.y * 0.1
 
     group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetY, 0.05)
@@ -37,7 +53,7 @@ export function BlueGuyAvatar() {
   })
 
   return (
-    <group ref={group} rotation={[0, -Math.PI / 6, 0]}>
+    <group ref={group}>
       <primitive object={scene} />
     </group>
   )

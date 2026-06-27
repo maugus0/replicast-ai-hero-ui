@@ -54,13 +54,14 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
       })
     }
 
-    // Play idle animation with neck tracks removed to prevent conflict with head tracking
+    // Play idle animation with head/neck tracks removed to prevent conflict with eye tracking
     const idleClip = THREE.AnimationClip.findByName(animations, 'idle') || animations[0]
     if (idleClip && mixer) {
       const cleanClip = idleClip.clone()
-      cleanClip.tracks = cleanClip.tracks.filter(
-        (track) => !track.name.toLowerCase().includes('neck')
-      )
+      cleanClip.tracks = cleanClip.tracks.filter((track) => {
+        const trackName = track.name.toLowerCase()
+        return !trackName.includes('neck') && !trackName.includes('head')
+      })
       const idleAction = mixer.clipAction(cleanClip)
       idleAction.play()
     }
@@ -75,12 +76,26 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
   }, [scene, mixer, animations, onReady])
 
   useEffect(() => {
+    const updatePointer = (clientX: number, clientY: number) => {
+      mousePosRef.current.x = (clientX / window.innerWidth) * 2 - 1
+      mousePosRef.current.y = (clientY / window.innerHeight) * 2 - 1
+    }
     const handleMouseMove = (e: MouseEvent) => {
-      mousePosRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
-      mousePosRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1
+      updatePointer(e.clientX, e.clientY)
+    }
+    const handleTouch = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY)
+      }
     }
     window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('touchstart', handleTouch, { passive: true })
+    window.addEventListener('touchmove', handleTouch, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('touchstart', handleTouch)
+      window.removeEventListener('touchmove', handleTouch)
+    }
   }, [])
 
   useEffect(() => {
@@ -105,15 +120,18 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
     }
 
     if (eyeTracking.enabled) {
+      const targetX = mousePosRef.current.x * eyeTracking.maxAngle
+      const targetY = -mousePosRef.current.y * eyeTracking.maxAngle * 0.5
+
       if (headRef.current) {
         headRef.current.rotation.y = THREE.MathUtils.lerp(
           headRef.current.rotation.y,
-          mousePosRef.current.x * eyeTracking.maxAngle,
+          targetX,
           eyeTracking.smoothing
         )
         headRef.current.rotation.x = THREE.MathUtils.lerp(
           headRef.current.rotation.x,
-          mousePosRef.current.y * eyeTracking.maxAngle * 0.5,
+          targetY,
           eyeTracking.smoothing
         )
       }
@@ -121,12 +139,12 @@ export function TalkingAvatar({ isSpeaking = false, onReady }: TalkingAvatarProp
       if (neckRef.current) {
         neckRef.current.rotation.y = THREE.MathUtils.lerp(
           neckRef.current.rotation.y,
-          mousePosRef.current.x * eyeTracking.maxAngle * 0.3,
+          targetX * 0.3,
           eyeTracking.smoothing
         )
         neckRef.current.rotation.x = THREE.MathUtils.lerp(
           neckRef.current.rotation.x,
-          mousePosRef.current.y * eyeTracking.maxAngle * 0.15,
+          targetY * 0.3,
           eyeTracking.smoothing
         )
       }
