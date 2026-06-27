@@ -1,12 +1,25 @@
-import { Hero, About, Features, ContactCTA } from '@/components/sections'
+import {
+  Hero,
+  About,
+  AboutKiosk,
+  Features,
+  ContactCTA,
+  JayaGrocers,
+  BrezzeCollab,
+  PartnershipsGallery,
+} from '@/components/sections'
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <About />
+      <AboutKiosk />
       <Features />
+      <About />
       <ContactCTA />
+      <JayaGrocers />
+      <PartnershipsGallery />
+      <BrezzeCollab />
     </>
   )
 }

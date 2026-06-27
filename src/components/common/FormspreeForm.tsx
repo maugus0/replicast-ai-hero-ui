@@ -18,11 +18,20 @@ const industryOptions = [
   { value: 'other', label: 'Other' },
 ]
 
+const phoneRegex = /^[\d\s\-+().]*$/
+const nameRegex = /^[A-Za-z\s'-]+$/
+
 const demoFormSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
+  name: z
+    .string()
+    .min(2, 'Name must be at least 2 characters')
+    .regex(nameRegex, 'Name cannot contain numbers'),
   email: z.string().email('Invalid email address'),
   company: z.string().min(2, 'Company name required'),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .optional()
+    .refine((val) => !val || phoneRegex.test(val), 'Phone cannot contain letters'),
   industry: z.string().min(1, 'Please select an industry'),
   voicePreference: z.enum(['lessac', 'amy']),
   message: z.string().min(10, 'Message must be at least 10 characters'),

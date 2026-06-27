@@ -20,10 +20,16 @@ This is a **single-page landing site** with the following sections:
 
 | Section | Description |
 |---------|-------------|
-| **Hero** | Eye-catching header with kiosk image and CTAs |
-| **About** | Interactive 3D avatar in a virtual kiosk frame |
+| **Hero** | Eye-catching header with 3D avatar kiosk and CTAs |
+| **About Kiosk** | Interactive 3D avatar in a tablet-style kiosk frame |
 | **Features** | Key capabilities of the AI digital humans |
-| **Contact** | Demo request form with TTS-enabled avatar |
+| **About** | Company overview and value proposition |
+| **Contact** | Demo request form with dual 3D avatar kiosks and TTS |
+| **Jaya Grocers** | Partnership video section |
+| **Partnerships Gallery** | Showcase of strategic partnerships |
+| **Brezze Collab** | Brezze SG partnership video section |
+
+Navigation uses section-based scrolling via header links and mobile nav arrows.
 
 ---
 
@@ -38,7 +44,7 @@ This is a **single-page landing site** with the following sections:
 | **Styling** | Tailwind CSS 3.4 | Utility classes like `bg-blue-500` instead of writing CSS |
 | **3D Rendering** | React Three Fiber 9 | React wrapper for Three.js (3D graphics library) |
 | **Animations** | Framer Motion 12 | Declarative animations for React |
-| **Forms** | React Hook Form + Zod | Form state management + validation |
+| **Forms** | React Hook Form + Zod (optional Formspree component); Contact CTA uses inline validation + `mailto:` |
 | **TTS** | Web Speech API | Built-in browser text-to-speech (no backend needed!) |
 | **Testing** | Vitest / Jest | Fast unit testing with coverage |
 | **Linting** | ESLint 9 | Catches code quality issues |
@@ -150,6 +156,9 @@ replicast-ai-hero-ui/
 ├── 📁 public/                     # Static files served as-is
 │   ├── models/avatar/             # 3D model (GLTF) for TTS demo
 │   ├── models/Marina/             # 3D model (OBJ) for About section
+│   ├── models/Guy1/               # Animated avatar model (GLB)
+│   ├── models/blueguy/            # Blue shirt avatar model (GLB)
+│   ├── videos/                    # Partnership/collab videos (may be git-ignored)
 │   ├── images/                    # Logos, OG images
 │   └── favicon.ico                # Browser tab icon
 │
@@ -236,7 +245,7 @@ Environment variables let you configure the app without changing code.
 | Variable | What it does | When you need it |
 |----------|--------------|------------------|
 | `NEXT_PUBLIC_BASE_PATH` | URL prefix for subdirectory hosting | GitHub Pages (set by CI) |
-| `NEXT_PUBLIC_FORMSPREE_ID` | Your Formspree form ID | To make contact form work |
+| `NEXT_PUBLIC_FORMSPREE_ID` | Your Formspree form ID | Optional; only needed if using `FormspreeForm` |
 | `NEXT_PUBLIC_SITE_URL` | Full site URL | For SEO meta tags |
 | `NEXT_PUBLIC_APP_VERSION` | Version number | Set by CI from git tag |
 
@@ -246,15 +255,36 @@ Environment variables let you configure the app without changing code.
 
 ## How Things Work
 
-### The 3D Avatar
+### The 3D Avatars
 
-Located in the hero section, the avatar uses:
+The site includes several interactive 3D avatar experiences across sections:
 
 1. **React Three Fiber** - Lets us use Three.js with React syntax
-2. **GLTF model** - 3D model format, loaded from `public/models/avatar/`
-3. **Animations** - Breathing effect, gentle swaying
+2. **GLTF/GLB models** - 3D model formats loaded from `public/models/`
+3. **Kiosk frames** - Tablet/phone-style UI wrappers around the 3D canvas
+4. **Animations** - Idle, wave, walk, and other animation clips per avatar
 
-**File**: `src/components/avatar/HolographicAvatar.tsx`
+Key components:
+
+| Component | Used in | Purpose |
+|-----------|---------|---------|
+| `HeroAvatar.tsx` | Hero | Main hero kiosk avatar |
+| `TalkingAvatar.tsx` | Contact | TTS-enabled voice assistant |
+| `Guy1Avatar.tsx` | Contact | Interactive animation selector |
+| `BlueGuyAvatar.tsx` | About Kiosk | About section avatar |
+| `Girl2Avatar.tsx` | About | About section avatar |
+
+### Contact Form
+
+The Contact CTA form validates input client-side and opens a prefilled email draft via `mailto:`:
+
+- Required fields: name, email
+- Validation: no numbers in name, email format, no letters in phone, character limits
+- On submit: opens the user's email client with subject/body prefilled
+
+**File**: `src/components/sections/ContactCTA.tsx`
+
+An optional `FormspreeForm` component (React Hook Form + Zod) is also available in `src/components/common/FormspreeForm.tsx` if you prefer server-side form handling.
 
 ### Text-to-Speech Demo
 
@@ -310,7 +340,7 @@ The project uses **GitHub Actions** for comprehensive continuous integration and
             └──────────┬──────────┘
                        ▼
             ┌─────────────────┐
-            │  Docker Build   │               ← Stage 3
+            │  Docker Build   │               ← Stage 3 (tag-only)
             └────────┬────────┘
                      ▼
             ┌─────────────────┐
@@ -342,7 +372,7 @@ The project uses **GitHub Actions** for comprehensive continuous integration and
 | **1B** | Unit Tests | Vitest with coverage | Always |
 | **2A** | Build Artifact | Next.js static export to `out/` | After Stage 1 |
 | **2B** | Security Scan | Snyk OSS vulnerability scan | After Stage 1 |
-| **3** | Docker Build | Build & push image to GHCR | After Stage 2 |
+| **3** | Docker Build | Build & push image to GHCR | Tag only |
 | **4** | Trivy Scan | Container vulnerability scan | Tag only |
 | **5** | Deploy Pages | Deploy to GitHub Pages + health check + Playwright smoke test | Tag only |
 | **6** | Verify Tag | Confirm `<meta name="app-version">` matches tag | Tag only |
@@ -353,9 +383,9 @@ The project uses **GitHub Actions** for comprehensive continuous integration and
 
 | Trigger | Stages | Description |
 |---------|--------|-------------|
-| **Pull Request** | 1-3 | Lint, tests, build, security, Docker |
-| **Push to main** | 1-3 | Same as PR |
-| **Tag push (v*)** | 1-8 | Full pipeline including deploy + security scans |
+| **Pull Request** | 1-2 | Lint, tests, build artifact, security scan |
+| **Push to main** | 1-2 | Same as PR |
+| **Tag push (v*)** | 1-8 | Full pipeline including Docker, deploy + security scans |
 
 ### Deployment Workflow
 
